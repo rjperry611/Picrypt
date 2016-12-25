@@ -1,7 +1,5 @@
 package com.lezorte.picrypt.transform;
 
-import com.lezorte.picrypt.utils.Constants;
-
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
@@ -18,27 +16,25 @@ import java.security.spec.InvalidKeySpecException;
  * using the password. It will add any nessecary metadata it needs to
  *
  */
-public class Encrypter extends OutputStream {
+public class Encrypter extends FilterOutputStream {
 
-    private CipherOutputStream cipherOutputStream;
-
-    public Encrypter(String password, OutputStream outputStream) {
+    public static Encrypter getInstance(String password, OutputStream outputStream) {
         try {
             // Build ciphers
-            Cipher cipher = Cipher.getInstance(Constants.ENCRYPTION_ALGORITHM);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
 
             // Generate IV and salt
             SecureRandom random = new SecureRandom();
-            byte[] iv = new byte[Constants.IV_LENGTH];
-            byte[] salt = new byte[Constants.SALT_LENGTH];
+            byte[] iv = new byte[16];
+            byte[] salt = new byte[64];
             random.nextBytes(salt);
             random.nextBytes(iv);
 
             // Generate key
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(Constants.KEY_GENERATION_ALGORITHM);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
             PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt, 100000, 128);
             SecretKey key = keyFactory.generateSecret(pbeKeySpec);
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), Constants.ENCRYPTION_ALGORITHM.split("/")[0]);
+            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
 
             // Init cipher
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(iv));
@@ -48,8 +44,8 @@ public class Encrypter extends OutputStream {
             outputStream.write(salt);
 
             // Init cipher stream
-            this.cipherOutputStream = new CipherOutputStream(outputStream, cipher);
-
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+            return new Encrypter(cipherOutputStream);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -63,11 +59,11 @@ public class Encrypter extends OutputStream {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-
-    @Override
-    public void write(int next) throws IOException {
-        this.cipherOutputStream.write(next);
+    private Encrypter(CipherOutputStream outputStream) {
+        super(outputStream);
     }
+
 }

@@ -1,13 +1,12 @@
 package com.lezorte.picrypt.utils;
 
-import com.lezorte.picrypt.exceptions.FileTooBigException;
+import com.lezorte.picrypt.exceptions.ImageFullException;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 
 import javax.imageio.ImageIO;
 
@@ -21,15 +20,11 @@ public class FileManager {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static byte[] loadFile(String path) throws FileTooBigException {
+	public static byte[] loadFile(String path) throws ImageFullException {
 		File file = new File(path);
 		try {
 			FileInputStream fin = new FileInputStream(file);
 			long length = file.length();
-			if (/*length > (long)Constants.MAXIMUM_ARRAY_SIZE*/false) {
-				fin.close();
-				throw new FileTooBigException();
-			}
 			byte[] data = new byte[(int)file.length()];
 			fin.read(data);
 			fin.close();
@@ -41,7 +36,7 @@ public class FileManager {
 		return null;		
 	}
 	
-	public static byte[] loadFileWithName(String path) throws FileTooBigException {
+	public static byte[] loadFileWithName(String path) throws ImageFullException {
 		File file = new File(path);
 		byte[] fileData = loadFile(path);
 		byte[] fileName = (byte[])file.getName().getBytes();

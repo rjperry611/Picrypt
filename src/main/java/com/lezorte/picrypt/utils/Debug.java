@@ -11,9 +11,10 @@ public class Debug {
 	 * @param b
 	 *            - the byte to print as binary
 	 */
-	public static void printBinary(byte b) {
+	public static void printBinary(byte b, boolean newLine) {
 		String bits = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
-		System.out.println(bits.substring(0,4) + "_" + bits.substring(4,8));
+		System.out.print(bits.substring(0,4) + "_" + bits.substring(4,8));
+		if(newLine) System.out.println();
 	}
 
 	/**
@@ -22,12 +23,12 @@ public class Debug {
 	 * @param num
 	 *            - the integer to print as binary
 	 */
-	public static void printBinary(int num) {
+	public static void printBinary(int num, boolean newLine) {
 		String bits = String.format("%32s", Integer.toBinaryString(num)).replace(' ', '0');
 		for(int i=0;i<4;i++) {
 			System.out.print(bits.substring(0+8*i, 4+8*i)+"_"+bits.substring(4+8*i,8+8*i)+(i<3?" ":""));
 		}
-		System.out.println();
+		if(newLine) System.out.println();
 		
 	}
 

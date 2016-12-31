@@ -1,10 +1,9 @@
 package com.lezorte.picrypt.transform;
 
-import com.lezorte.picrypt.utils.Debug;
-import jdk.internal.util.xml.impl.Input;
-
-import java.io.*;
-import java.util.Random;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by lezorte on 12/3/16.

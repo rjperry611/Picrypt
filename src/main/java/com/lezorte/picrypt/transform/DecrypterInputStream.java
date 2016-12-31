@@ -17,9 +17,9 @@ import java.security.spec.InvalidKeySpecException;
  * using the password. It will add any nessecary metadata it needs to
  *
  */
-public class Decrypter extends FilterInputStream {
+public class DecrypterInputStream extends FilterInputStream {
 
-    public static Decrypter getInstance(String password, InputStream inputStream) {
+    public static DecrypterInputStream getInstance(String password, InputStream inputStream) {
         try {
             // Build ciphers
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
@@ -41,7 +41,7 @@ public class Decrypter extends FilterInputStream {
 
             // Init cipher stream
             CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
-            return new Decrypter(cipherInputStream);
+            return new DecrypterInputStream(cipherInputStream);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -58,7 +58,7 @@ public class Decrypter extends FilterInputStream {
         return null;
     }
 
-    private Decrypter(CipherInputStream inputStream) {
+    private DecrypterInputStream(CipherInputStream inputStream) {
         super(inputStream);
     }
 

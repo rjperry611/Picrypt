@@ -30,7 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  * Created by lezorte on 12/3/16.
  */
-public class PicCrypt extends JFrame{
+public class Picrypt extends JFrame{
 	
 	private static final long serialVersionUID = -8795429647646551627L;
 	private JPanel contentPane;
@@ -177,7 +177,7 @@ public class PicCrypt extends JFrame{
 		return true;
 	}
 	
-	public PicCrypt() {
+	public Picrypt() {
 		//FileManager.frame = this;
 
 		try {
@@ -186,7 +186,7 @@ public class PicCrypt extends JFrame{
 			e.printStackTrace();
 		}
 
-		setTitle("PicCrypt");
+		setTitle("Picrypt");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(310, 470);
 		setLocationRelativeTo(null);
@@ -415,7 +415,7 @@ public class PicCrypt extends JFrame{
 
 			public void run() {
 				try {
-					PicCrypt frame = new PicCrypt();
+					Picrypt frame = new Picrypt();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

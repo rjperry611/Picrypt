@@ -1,15 +1,14 @@
 package com.lezorte.picrypt.transform;
 
-import com.lezorte.picrypt.utils.Debug;
+import com.lezorte.picrypt.exceptions.ImageFullException;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Created by lezorte on 12/29/16.
@@ -28,7 +27,7 @@ public class ImageDataInjectorOutputStreamTest {
     };
 
     @Test
-    public void test() {
+    public void testImageData() {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
             ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
@@ -40,8 +39,36 @@ public class ImageDataInjectorOutputStreamTest {
             assertEquals(image.getRGB(1,1),expectedPixels[1][1]);
         } catch(IOException e) {
             e.printStackTrace();
+            fail("unknown IOException");
+        }
+    }
+
+    @Test
+    public void testImageFullException() {
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
+            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            outputStream.write(new byte[]{'a', 'b', 'c', 'd'});
+            outputStream.close();
+        } catch(ImageFullException e) {
+            fail("Image should not throw exception if every bit is filled");
+        } catch(IOException e) {
+            e.printStackTrace();
+            fail("unknown IOException");
         }
 
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
+            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            outputStream.write(new byte[]{'a', 'b', 'c', 'd', 'e'});
+            fail("Image should throw exception if too much data is provided");
+            outputStream.close();
+            throw new IOException();
+        } catch(ImageFullException e) {
+        } catch(IOException e) {
+            e.printStackTrace();
+            fail("unknown IOException");
+        }
     }
 
 }

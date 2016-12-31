@@ -53,8 +53,7 @@ public class ImageDataInjectorOutputStream extends OutputStream {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // In order to do the reverse...
-        // ByteBuffer.wrap(arr).getLong();
+        image = null;
     }
 
     private void writeBit(int b) throws ImageFullException {

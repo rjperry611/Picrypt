@@ -20,6 +20,11 @@ public class EncrypterOutputStream extends FilterOutputStream {
 
     public static EncrypterOutputStream getInstance(String password, OutputStream outputStream) {
         try {
+            // Write version of encryption process into outputStream. This will allow future updates to the
+            // encryption/decryption process to be backwards compatible with images produced with older versions.
+            // Currently on version 1.
+            outputStream.write(1);
+
             // Build ciphers
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
 

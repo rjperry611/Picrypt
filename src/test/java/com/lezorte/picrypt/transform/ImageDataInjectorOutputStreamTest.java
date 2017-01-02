@@ -33,10 +33,10 @@ public class ImageDataInjectorOutputStreamTest {
             ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
             outputStream.write('r');
             outputStream.close();
-            assertEquals(image.getRGB(0,0),expectedPixels[0][0]);
-            assertEquals(image.getRGB(0,1),expectedPixels[0][1]);
-            assertEquals(image.getRGB(1,0),expectedPixels[1][0]);
-            assertEquals(image.getRGB(1,1),expectedPixels[1][1]);
+            assertEquals(expectedPixels[0][0], image.getRGB(0, 0));
+            assertEquals(expectedPixels[0][1], image.getRGB(0, 1));
+            assertEquals(expectedPixels[1][0], image.getRGB(1, 0));
+            assertEquals(expectedPixels[1][1], image.getRGB(1, 1));
         } catch(IOException e) {
             e.printStackTrace();
             fail("unknown IOException");

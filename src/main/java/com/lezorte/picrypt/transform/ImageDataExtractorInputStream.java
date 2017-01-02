@@ -19,7 +19,7 @@ public class ImageDataExtractorInputStream extends InputStream {
     private int currentColor = 0;
     private int currentBitPosition = 0;
     private long messageSize = 0;
-    private long totalBytesRead = 0;
+    private long totalBytesRead = -8;
 
     public ImageDataExtractorInputStream(BufferedImage image) {
         this.image = image;
@@ -41,6 +41,7 @@ public class ImageDataExtractorInputStream extends InputStream {
         for(int i=0;i<8;i++) {
             byteValue |= readBit()<<i;
         }
+        totalBytesRead++;
         return byteValue;
     }
 

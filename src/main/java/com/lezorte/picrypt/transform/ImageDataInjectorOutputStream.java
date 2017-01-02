@@ -18,14 +18,13 @@ public class ImageDataInjectorOutputStream extends OutputStream {
     private int y = 0;
     private int currentColor = 0;
     private int currentBitPosition = 0;
-    private long messageSize = 0;
+    private long messageSize = -8;
 
     public ImageDataInjectorOutputStream(BufferedImage image) {
         this.image = image;
         try {
             //This is needed so that the message size can be written to the beginning
             write(ByteBuffer.allocate(8).array());
-            messageSize = 0;
         } catch (IOException e) {
             e.printStackTrace();
         }

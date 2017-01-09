@@ -5,6 +5,7 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -35,18 +36,31 @@ public class ImageDataExtractorInputStreamTest {
 
 
     @Test
-    public void imageDataExtractionLoadTest() {
+    public void testProperImageDataExtractionOnLargeAmountOfData() {
         try {
-            BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
+            int dataSize = 1_000_000;
+            BufferedImage image = new BufferedImage(10_000,10_000,BufferedImage.TYPE_INT_ARGB);
             ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
-            outputStream.write(new byte[]{'r','g','b'});
+            Random random = new Random();
+            int[] data = new int[dataSize];
+            for(int i=0;i<dataSize;i++) {
+                data[i] = random.nextInt(256);
+                outputStream.write(data[i]);
+            }
             outputStream.close();
             ImageDataExtractorInputStream inputStream = new ImageDataExtractorInputStream(image);
+            for(int i=0;i<dataSize;i++) {
+                int b = inputStream.read();
+                if(b!=data[i]) {
+                    fail("Data extracted from image did not match data written to image.");
+                }
+            }
             inputStream.close();
         } catch(IOException e) {
             e.printStackTrace();
             fail("unknown IOException");
         }
+
     }
 
 }

@@ -1,7 +1,7 @@
 package com.lezorte.picrypt.gui;
 
-import com.lezorte.picrypt.transform.Hider;
-import com.lezorte.picrypt.transform.Seeker;
+import com.lezorte.picrypt.transform.DataHider;
+import com.lezorte.picrypt.transform.DataExtractor;
 
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -90,13 +90,13 @@ public class Picrypt extends JFrame{
 
 	private void ButtonE() {
 		if(eReady()) {
-			Hider.hide(fileET.getText(), imageET.getText(), saveET.getText(), new String(passET.getPassword()));
+			DataHider.hide(fileET.getText(), imageET.getText(), saveET.getText(), new String(passET.getPassword()));
 		}
 	}
 	
 	private void ButtonD() {
 		if(dReady()) {
-			Seeker.seek(imageDT.getText(), saveDT.getText(),new String(passDT.getPassword()));
+			DataExtractor.seek(imageDT.getText(), saveDT.getText(),new String(passDT.getPassword()));
 		}
 	}
 	

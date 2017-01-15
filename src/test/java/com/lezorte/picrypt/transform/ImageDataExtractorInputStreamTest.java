@@ -19,7 +19,7 @@ public class ImageDataExtractorInputStreamTest {
     public void testProperImageDataExtraction() {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
-            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
             outputStream.write(new byte[]{'r','g','b'});
             outputStream.close();
             ImageDataExtractorInputStream inputStream = new ImageDataExtractorInputStream(image);
@@ -40,7 +40,7 @@ public class ImageDataExtractorInputStreamTest {
         try {
             int dataSize = 1_000_000;
             BufferedImage image = new BufferedImage(10_000,10_000,BufferedImage.TYPE_INT_ARGB);
-            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
             Random random = new Random();
             int[] data = new int[dataSize];
             for(int i=0;i<dataSize;i++) {

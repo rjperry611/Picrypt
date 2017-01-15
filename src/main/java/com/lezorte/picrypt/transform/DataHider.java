@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Created by lezorte on 12/3/16.
  */
-public class Hider {
+public class DataHider {
 
 
     public static void hide(String filePath, String imagePath, String savePath, String password) {

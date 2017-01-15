@@ -13,7 +13,7 @@ import static org.junit.Assert.fail;
 /**
  * Created by lezorte on 12/29/16.
  */
-public class ImageDataInjectorOutputStreamTest {
+public class ImageDataHiderOutputStreamTest {
 
     private static final int[][] expectedPixels = new int[][]{
             {
@@ -30,7 +30,7 @@ public class ImageDataInjectorOutputStreamTest {
     public void testImageData() {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
-            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
             outputStream.write('r');
             outputStream.close();
             assertEquals(expectedPixels[0][0], image.getRGB(0, 0));
@@ -47,7 +47,7 @@ public class ImageDataInjectorOutputStreamTest {
     public void testImageFullException() {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
-            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
             outputStream.write(new byte[]{'a', 'b', 'c', 'd'});
             outputStream.close();
         } catch(ImageFullException e) {
@@ -59,7 +59,7 @@ public class ImageDataInjectorOutputStreamTest {
 
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
-            ImageDataInjectorOutputStream outputStream = new ImageDataInjectorOutputStream(image);
+            ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
             outputStream.write(new byte[]{'a', 'b', 'c', 'd', 'e'});
             fail("Image should throw exception if too much data is provided");
             outputStream.close();

@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by rjper on 12/24/2016.
  */
-public class ImageDataInjectorOutputStream extends OutputStream {
+public class ImageDataHiderOutputStream extends OutputStream {
 
     private BufferedImage image;
 
@@ -20,7 +20,7 @@ public class ImageDataInjectorOutputStream extends OutputStream {
     private int currentBitPosition = 0;
     private long messageSize = -8;
 
-    public ImageDataInjectorOutputStream(BufferedImage image) {
+    public ImageDataHiderOutputStream(BufferedImage image) {
         this.image = image;
         try {
             //This is needed so that the message size can be written to the beginning

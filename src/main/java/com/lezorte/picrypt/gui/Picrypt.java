@@ -90,13 +90,23 @@ public class Picrypt extends JFrame{
 
 	private void ButtonE() {
 		if(eReady()) {
-			DataHider.hide(fileET.getText(), imageET.getText(), saveET.getText(), new String(passET.getPassword()));
+			try {
+				DataHider.hide(fileET.getText(), imageET.getText(), saveET.getText(), new String(passET.getPassword()));
+				JOptionPane.showMessageDialog(this, "Success!", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 	
 	private void ButtonD() {
 		if(dReady()) {
-			DataExtractor.seek(imageDT.getText(), saveDT.getText(),new String(passDT.getPassword()));
+		    try {
+				DataExtractor.seek(imageDT.getText(), saveDT.getText(), new String(passDT.getPassword()));
+				JOptionPane.showMessageDialog(this, "Success!", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 	
@@ -209,7 +219,6 @@ public class Picrypt extends JFrame{
 		contentPane.add(EL, gbc_EL);
 
 		fileET = new JTextField();
-		fileET.setEditable(false);
 		GridBagConstraints gbc_fileET = new GridBagConstraints();
 		gbc_fileET.gridwidth = 5;
 		gbc_fileET.insets = new Insets(0, 0, 5, 5);
@@ -234,7 +243,6 @@ public class Picrypt extends JFrame{
 		contentPane.add(fileEB, gbc_fileEB);
 
 		imageET = new JTextField();
-		imageET.setEditable(false);
 		GridBagConstraints gbc_imageET = new GridBagConstraints();
 		gbc_imageET.gridwidth = 5;
 		gbc_imageET.insets = new Insets(0, 0, 5, 5);
@@ -276,7 +284,6 @@ public class Picrypt extends JFrame{
 		contentPane.add(passEL, gbc_passEL);
 
 		saveET = new JTextField();
-		saveET.setEditable(false);
 		GridBagConstraints gbc_saveET = new GridBagConstraints();
 		gbc_saveET.gridwidth = 5;
 		gbc_saveET.insets = new Insets(0, 0, 5, 5);
@@ -330,7 +337,6 @@ public class Picrypt extends JFrame{
 		contentPane.add(DL, gbc_DL);
 
 		imageDT = new JTextField();
-		imageDT.setEditable(false);
 		GridBagConstraints gbc_imageDT = new GridBagConstraints();
 		gbc_imageDT.gridwidth = 5;
 		gbc_imageDT.insets = new Insets(0, 0, 5, 5);
@@ -372,7 +378,6 @@ public class Picrypt extends JFrame{
 		contentPane.add(passDL, gbc_passDL);
 
 		saveDT = new JTextField();
-		saveDT.setEditable(false);
 		GridBagConstraints gbc_saveDT = new GridBagConstraints();
 		gbc_saveDT.gridwidth = 5;
 		gbc_saveDT.insets = new Insets(0, 0, 5, 5);

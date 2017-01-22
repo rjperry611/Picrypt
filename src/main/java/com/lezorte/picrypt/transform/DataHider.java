@@ -1,9 +1,9 @@
 package com.lezorte.picrypt.transform;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
 
 /**
  * Created by lezorte on 12/3/16.
@@ -11,23 +11,17 @@ import java.io.IOException;
 public class DataHider {
 
 
-    public static void hide(String filePath, String imagePath, String savePath, String password) {
-        File file = new File(filePath);
-        File imageFile = new File(imagePath);
-        if(!imageFile.exists()){
-            System.err.println("Image file does not exist");
-        }
-        try(FileInputStream inputStream = new FileInputStream(file)) {
-            int next;
-            while((next = inputStream.read()) != -1) {
+    public static void hide(String dataFilePath, String imagePath, String savePath, String password) throws IOException {
+        try (FileInputStream inputStream = new FileInputStream(new File(dataFilePath));
+             OutputStream imageDataHiderOutputStream = new ImageDataHiderOutputStream(imagePath, savePath);
+             OutputStream encrypterOutputStream = EncrypterOutputStream.getInstance(password, imageDataHiderOutputStream)) {
 
-            }
-        } catch (FileNotFoundException e) {
-            System.err.println("File to hide does not exist");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            encrypterOutputStream.write(FilenameUtils.getName(dataFilePath).getBytes("UTF-8"));
+            encrypterOutputStream.write(0);
+            IOUtils.copy(inputStream, encrypterOutputStream);
+
         }
     }
+
 
 }

@@ -1,8 +1,12 @@
 package com.lezorte.picrypt.transform;
 
 import com.lezorte.picrypt.exceptions.ImageCorruptException;
+import org.apache.commons.io.FilenameUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -20,6 +24,21 @@ public class ImageDataExtractorInputStream extends InputStream {
     private int currentBitPosition = 0;
     private long messageSize = 0;
     private long totalBytesRead = -8;
+
+    public ImageDataExtractorInputStream(String imagePath) throws IOException {
+        File imageFile = new File(imagePath);
+        if(!imageFile.exists()) {
+            throw new FileNotFoundException("Image file does not exist");
+        }
+        if(!FilenameUtils.getExtension(imagePath).toLowerCase().equals("png")) {
+            throw new IOException("Only PNG image files are supported for extraction");
+        }
+        image = ImageIO.read(imageFile);
+
+        byte[] messageSizeAsArray = new byte[8];
+        read(messageSizeAsArray);
+        messageSize = ByteBuffer.wrap(messageSizeAsArray).getLong();
+    }
 
     public ImageDataExtractorInputStream(BufferedImage image) {
         this.image = image;

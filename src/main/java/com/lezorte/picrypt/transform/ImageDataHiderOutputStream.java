@@ -12,7 +12,10 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Created by rjper on 12/24/2016.
+ * This class takes individual bytes and hides them into an image. It accomplishes this by breaking down the image data
+ * into individual pixels and each pixel down to 3 bytes: red, green, and blue. It replaces the bits starting from the
+ * least significant and moving towards the most significant until all color data has been replaced by data. As long as
+ * 2 or 3 bits are left for all colors, there shouldn't be a noticable difference to the human eye in the new image.
  */
 public class ImageDataHiderOutputStream extends OutputStream {
 
@@ -22,7 +25,8 @@ public class ImageDataHiderOutputStream extends OutputStream {
     private int y = 0;
     private int currentColor = 0;
     private int currentBitPosition = 0;
-    private long messageSize = -8;
+    private long messageSize = 0;
+    private long totalAllowedMessageSize = 0;
 
     private String outputImagePath = "";
 
@@ -32,9 +36,20 @@ public class ImageDataHiderOutputStream extends OutputStream {
 
     private boolean closed = false;
 
+    private static final int CURRENT_VERSION = 1;
+
+    /**
+     * Loads an image from the input path provided. Once close is called on the stream, the new image will be saved
+     * to the output path provided
+     * @param inputImagePath
+     * @param outputImagePath
+     * @throws IOException
+     */
     public ImageDataHiderOutputStream(String inputImagePath, String outputImagePath) throws IOException {
         this.mode = DISK_MODE;
         this.outputImagePath = outputImagePath;
+
+        // Load image and check for issues
         File imageFile = new File(inputImagePath);
         if(!imageFile.exists()){
             throw new FileNotFoundException("Image file does not exist");
@@ -46,19 +61,43 @@ public class ImageDataHiderOutputStream extends OutputStream {
         if(image==null) {
             throw new IOException("Image did not properly load");
         }
-        //This is needed so that the message size can be written to the beginning
-        write(ByteBuffer.allocate(8).array());
+
+        init();
     }
 
-    public ImageDataHiderOutputStream(BufferedImage image) {
+    /**
+     * The image provided will be used for hiding data
+     * @param image
+     * @throws IOException
+     */
+    public ImageDataHiderOutputStream(BufferedImage image) throws IOException {
         this.mode = MEMORY_MODE;
         this.image = image;
-        try {
-            //This is needed so that the message size can be written to the beginning
-            write(ByteBuffer.allocate(8).array());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        init();
+    }
+
+    private void init() throws IOException {
+        //This is needed so that the message size can be written to the beginning
+        write(ByteBuffer.allocate(8).array());
+
+        // Write version of data hiding process into the image. This will allow future updates to the
+        // encryption/decryption process to be backwards compatible with images produced with older versions.
+        write((byte)CURRENT_VERSION);
+
+        // Compute total allowed bytes based on image size
+        totalAllowedMessageSize = this.image.getWidth()*this.image.getHeight()*3 - messageSize;
+
+        // Reset message size variable
+        messageSize = 0;
+    }
+
+    /**
+     * Returns the available space in the image for data
+     * @return
+     */
+    public long availableSpace() {
+        return totalAllowedMessageSize - messageSize;
     }
 
     @Override

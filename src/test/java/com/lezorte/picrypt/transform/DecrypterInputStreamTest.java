@@ -1,5 +1,6 @@
 package com.lezorte.picrypt.transform;
 
+import com.lezorte.picrypt.exceptions.VersionDoesNotExistException;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -40,6 +41,9 @@ public class DecrypterInputStreamTest {
         } catch(IOException e) {
             e.printStackTrace();
             fail("Unknown IOException");
+        } catch (VersionDoesNotExistException e) {
+            e.printStackTrace();
+            fail("Decryption unsuccessful");
         }
     }
 
@@ -67,6 +71,9 @@ public class DecrypterInputStreamTest {
             fail("Decryption with wrong password should not have been successful");
 
         } catch(IOException e) {
+        } catch (VersionDoesNotExistException e) {
+            e.printStackTrace();
+            fail("Decryption unsuccessful");
         }
     }
 }

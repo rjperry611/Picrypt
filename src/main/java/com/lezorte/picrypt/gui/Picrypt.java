@@ -188,7 +188,6 @@ public class Picrypt extends JFrame{
 	}
 	
 	public Picrypt() {
-		//FileManager.frame = this;
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

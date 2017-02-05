@@ -22,7 +22,7 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class DecrypterInputStream extends FilterInputStream {
 
-    public static DecrypterInputStream getInstance(String password, InputStream inputStream) {
+    public static DecrypterInputStream getInstance(String password, InputStream inputStream) throws VersionDoesNotExistException {
         try {
             // Read version of encryption process from inputStream. This will allow future updates to the
             // encryption/decryption process to be backwards compatible with images produced with older versions.
@@ -50,8 +50,9 @@ public class DecrypterInputStream extends FilterInputStream {
                 // Init cipher stream
                 CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
                 return new DecrypterInputStream(cipherInputStream);
+            } else {
+                throw new VersionDoesNotExistException("The encrypter version read from the inputStream does not exist");
             }
-            throw new VersionDoesNotExistException("The encrypter version read from the inputStream does not exist");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -63,8 +64,6 @@ public class DecrypterInputStream extends FilterInputStream {
         } catch (InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (VersionDoesNotExistException e) {
             e.printStackTrace();
         }
         return null;

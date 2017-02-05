@@ -6,11 +6,18 @@ import org.apache.commons.io.IOUtils;
 import java.io.*;
 
 /**
- * Created by lezorte on 12/3/16.
+ * Main logic for hiding data into an image.
  */
 public class DataHider {
 
-
+    /**
+     * Call hide to hide data into an image and save it as a new image. It will encrypt the data as well as hide it.
+     * @param dataFilePath Path to the file which contains the data to hide
+     * @param imagePath Image which the data will be saved into
+     * @param savePath Path which the new image will be saved to
+     * @param password Password for encrypting the data
+     * @throws IOException
+     */
     public static void hide(String dataFilePath, String imagePath, String savePath, String password) throws IOException {
         try (FileInputStream inputStream = new FileInputStream(new File(dataFilePath));
              OutputStream imageDataHiderOutputStream = new ImageDataHiderOutputStream(imagePath, savePath);

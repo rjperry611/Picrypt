@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
@@ -15,40 +14,14 @@ import static org.junit.Assert.fail;
  */
 public class ImageDataHiderOutputStreamTest {
 
-    private static final int[][] expectedPixels = new int[][]{
-            {
-                    0b1111_1111__1111_0000__0000_0000__0000_0000, //0,0
-                    0b1111_1111__0010_0000__0000_0000__0000_0000  //0,1
-            },
-            {
-                    0b1111_1111__0010_0000__1110_0000__0000_0000, //1,0
-                    0b1111_1111__1100_0000__1100_0000__1100_0000  //1,1
-            }
-    };
-
-    @Test
-    public void testImageData() {
-        try {
-            BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
-            ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
-            outputStream.write('r');
-            outputStream.close();
-            assertEquals(expectedPixels[0][0], image.getRGB(0, 0));
-            assertEquals(expectedPixels[0][1], image.getRGB(0, 1));
-            assertEquals(expectedPixels[1][0], image.getRGB(1, 0));
-            assertEquals(expectedPixels[1][1], image.getRGB(1, 1));
-        } catch(IOException e) {
-            e.printStackTrace();
-            fail("unknown IOException");
-        }
-    }
-
     @Test
     public void testImageFullException() {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
             ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
-            outputStream.write(new byte[]{'a', 'b', 'c', 'd'});
+            while(outputStream.availableSpace()>0) {
+                outputStream.write((byte)'a');
+            }
             outputStream.close();
         } catch(ImageFullException e) {
             fail("Image should not throw exception if every bit is filled");
@@ -60,7 +33,9 @@ public class ImageDataHiderOutputStreamTest {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/2by2.png"));
             ImageDataHiderOutputStream outputStream = new ImageDataHiderOutputStream(image);
-            outputStream.write(new byte[]{'a', 'b', 'c', 'd', 'e'});
+            while(outputStream.availableSpace()>-1) {
+                outputStream.write((byte)'a');
+            }
             fail("Image should throw exception if too much data is provided");
             outputStream.close();
             throw new IOException();

@@ -18,12 +18,13 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class EncrypterOutputStream extends FilterOutputStream {
 
+    private static final int CURRENT_VERSION = 1;
+
     public static EncrypterOutputStream getInstance(String password, OutputStream outputStream) {
         try {
             // Write version of encryption process into outputStream. This will allow future updates to the
             // encryption/decryption process to be backwards compatible with images produced with older versions.
-            // Currently on version 1.
-            outputStream.write(1);
+            outputStream.write((byte)CURRENT_VERSION);
 
             // Build ciphers
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");

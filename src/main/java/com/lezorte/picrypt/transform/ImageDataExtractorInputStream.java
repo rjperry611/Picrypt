@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Created by lezorte on 12/31/16.
+ * ImageDataExtractorInputStream will extract the data from an image that an ImageDataHiderOutputStream created.
  */
 public class ImageDataExtractorInputStream extends InputStream {
 
@@ -22,10 +22,17 @@ public class ImageDataExtractorInputStream extends InputStream {
     private int y = 0;
     private int currentColor = 0;
     private int currentBitPosition = 0;
-    private long messageSize = 0;
-    private long totalBytesRead = -8;
+    private int version = 0;
+    private long messageSize = 8;
+    private long totalBytesRead = 0;
 
+    /**
+     * Loads the image to extract from using the path provided
+     * @param imagePath
+     * @throws IOException
+     */
     public ImageDataExtractorInputStream(String imagePath) throws IOException {
+        // Load image and check for issues
         File imageFile = new File(imagePath);
         if(!imageFile.exists()) {
             throw new FileNotFoundException("Image file does not exist");
@@ -33,22 +40,44 @@ public class ImageDataExtractorInputStream extends InputStream {
         if(!FilenameUtils.getExtension(imagePath).toLowerCase().equals("png")) {
             throw new IOException("Only PNG image files are supported for extraction");
         }
-        image = ImageIO.read(imageFile);
+        this.image = ImageIO.read(imageFile);
 
+        init();
+    }
+
+    /**
+     * Extracts the data from the image provided
+     * @param image
+     * @throws IOException
+     */
+    public ImageDataExtractorInputStream(BufferedImage image) throws IOException {
+        this.image = image;
+
+        init();
+    }
+
+    private void init() throws IOException {
+        // Read the length of the data
         byte[] messageSizeAsArray = new byte[8];
         read(messageSizeAsArray);
         messageSize = ByteBuffer.wrap(messageSizeAsArray).getLong();
+
+        // Read the version
+        this.version = read();
+        if(version!=1) {
+            throw new ImageCorruptException("Data in image is corrupt");
+        }
+
+        // Reset bytes read variable
+        totalBytesRead = 0;
     }
 
-    public ImageDataExtractorInputStream(BufferedImage image) {
-        this.image = image;
-        try {
-            byte[] messageSizeAsArray = new byte[8];
-            read(messageSizeAsArray);
-            messageSize = ByteBuffer.wrap(messageSizeAsArray).getLong();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Returns the available number of bytes left in the image
+     * @return
+     */
+    public long availableData() {
+       return messageSize - totalBytesRead;
     }
 
     @Override
@@ -86,6 +115,8 @@ public class ImageDataExtractorInputStream extends InputStream {
                 }
             }
         }
+
+        // Read the bit
         int rgb = image.getRGB(x, y);
         int shift = currentColor*8+currentBitPosition;
         x++;

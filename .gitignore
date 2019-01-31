@@ -1,4 +1,7 @@
 .idea
-picrypt.iml
+*.iml
+.classpath
+.project
+.settings
 target
 dependency-reduced-pom.xml
